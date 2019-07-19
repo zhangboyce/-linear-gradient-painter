@@ -1,18 +1,18 @@
 import $ from "jquery";
 
 export default class Line {
-    constructor() {
+    constructor(angle) {
         this.$line = $('#line');
-        this.deg = 0;
+        this.angle = angle;
     }
 
-    setDeg(deg) {
-        this.deg = deg;
-        this.$line.css('transform', 'rotate(' + deg + 'deg)');
+    rotate(angle) {
+        this.angle = 270 - angle;
+        this.$line.css('transform', 'rotate(' + this.angle + 'deg)');
     }
 
-    getDeg() {
-        return this.deg;
+    getAngle() {
+        return this.angle;
     }
 
     click(callback = () => {}) {
@@ -20,8 +20,9 @@ export default class Line {
             e.preventDefault();
             e.stopPropagation();
 
-            let x = e.clientX;
-            let y = e.clientY;
+            let x = e.pageX;
+            let y = e.pageY;
+
             callback(x, y);
         });
     }

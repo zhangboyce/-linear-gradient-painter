@@ -1,24 +1,28 @@
 import $ from "jquery";
+import * as utils from './CoordinateUtils';
 
 export default class Point {
-    constructor(width, height, circle, r, background, canMove) {
-        this.width = width;
-        this.height = height;
-        this.circle = circle;
-        this.r = r;
+    constructor(x, y, background, canMove) {
+        this.x = x;
+        this.y = y;
+        this.width = 12;
+        this.height = 12;
         this.background = background;
         this.canMove = canMove;
         this.$point = $("<div class='point'></div>");
     }
 
-    top(deg) {
-        let __deg__ = Math.abs(deg) * Math.PI / 180;
-        return this.circle.R + (-Math.cos(__deg__)*this.r) - this.width / 2;
+    rotate(angle, headPoint, circle) {
+        let distance = utils.distance(headPoint, this);
+        angle = distance <= circle.R ? angle : 180 + angle;
+        let position = utils.rotate(this.x, this.y, angle);
+        this.x = position.x;
+        this.y = position.y;
     }
 
-    left(deg) {
-        let __deg__ = Math.abs(deg) * Math.PI / 180;
-        return this.circle.R + Math.sin(__deg__)*this.r - this.height / 2;
+    percent(headPoint, circle) {
+        let distance = utils.distance(headPoint, this);
+        return distance / (2 * circle.R);
     }
 
     startMoving() {
@@ -29,12 +33,13 @@ export default class Point {
         this.$point.removeClass('moving');
     }
 
-    render(deg) {
+    render(circle) {
+        let offset = circle.center2Offset(this.x, this.y);
         this.$point.css('width', this.width + 'px');
         this.$point.css('height', this.height + 'px');
         this.$point.css('background-color', this.background);
-        this.$point.css('top', this.top(deg) + 'px');
-        this.$point.css('left', this.left(deg) + 'px');
+        this.$point.css('top', (offset.y - this.height / 2) + 'px');
+        this.$point.css('left', (offset.x - this.width  / 2) + 'px');
 
         if (this.canMove) {
             this.$point.addClass('movable');
@@ -51,16 +56,7 @@ export default class Point {
             document.onmousemove = ev =>{
                 this.startMoving();
 
-                let a = ev.clientX - this.circle.center.X;
-                let b = ev.clientY - this.circle.center.Y;
-                let deg = Math.atan(Math.abs(a / b)) / (Math.PI / 180);
-
-                if (a > 0 && b > 0) deg = 180 - deg;
-                if (a < 0 && b > 0) deg = 180 + deg;
-                if (a < 0 && b < 0) deg = 360 - deg;
-                deg = Math.round(deg);
-
-                callback(deg);
+                callback(ev.pageX, ev.pageY);
             };
 
             document.onmouseup = () => {
