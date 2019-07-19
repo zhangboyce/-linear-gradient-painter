@@ -1,0 +1,19 @@
+.point {
+  display: inline-block;
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid @light-gray;
+  background-clip: padding-box;
+  transition: box-shadow 0.2s ease-out;
+  will-change: box-shadow;
+
+  &.movable {
+    cursor: pointer;
+    border-radius: 0;
+
+    &.moving {
+      box-shadow: 0 0 0 5px @light-gray;
+      border-color: @black_;
+    }
+  }
+}
