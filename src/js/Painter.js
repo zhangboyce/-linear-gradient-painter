@@ -32,14 +32,23 @@ export default class Painter {
                 this.render();
             });
         });
+
+        this.line.mouseMove((x, y) => {
+            let position = this.circle.page2Center(x, y);
+            let distance = utils.distance(this.headPoint, position);
+
+            let percent = distance / (2 * this.circle.R);
+            percent = Math.round(percent * 100);
+
+            console.log(percent);
+        });
     }
 
     __getBgs__ () {
         let bgs = [];
         this.points.forEach(point => {
-            let percent = point.percent(this.headPoint, this.circle);
-            let color = point.background;
-            bgs.push({ percent, color })
+            let linear = point.getLinearGradients(this.headPoint, this.circle);
+            bgs.push(...linear)
         });
         return bgs;
     };
@@ -63,7 +72,7 @@ export default class Painter {
         this.$painter.html('');
         this.__drawBg__();
         this.points.forEach((point, i) => {
-            let $point = point.render(this.circle);
+            let $point = point.render(this.circle, this.line);
             $point.attr('index', i);
             this.$painter.append($point);
 
@@ -81,7 +90,14 @@ export default class Painter {
 
             point.click(() => {
                 this.colorPicker.open(color => {
-                    point.background = color;
+                    point.setFirstBackground(color);
+                    this.render();
+                });
+            });
+
+            point.dblClick(() => {
+                this.colorPicker.open(color => {
+                    point.setSecondBackground(color);
                     this.render();
                 });
             });

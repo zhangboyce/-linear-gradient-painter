@@ -1,5 +1,5 @@
-@colors-width: 60vw;
-@colors-height: 60vh;
+@colors-width: 400px;
+@colors-height: 400px;
 
 .colors {
   visibility: hidden;
@@ -7,10 +7,10 @@
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
-  align-content: baseline;
+  align-content: center;
   justify-content: center;
-  top: (100% - @colors-height) / 2;
-  left: (100% - @colors-width) / 2;
+  top: calc((100% - @colors-height) / 2);
+  left: calc((100% - @colors-width) / 2);
   width: @colors-width;
   height: @colors-height;
   min-width: 400px;
@@ -34,10 +34,21 @@
 .colors .color {
   padding: 4px;
   margin: 4px;
-  width: 23%;
-  height: 30%;
+  width: 18%;
   transition: all .3s;
   cursor: pointer;
+  border-radius: 50%;
+  // height = width
+  &::before {
+    content: '';
+    padding-top: 100%;
+    float: left;
+  }
+  &::after {
+    content: '';
+    display: block;
+    clear: both;
+  }
 
   &:hover {
     box-shadow: 4px 4px 4px -2px rgba(0,64,128,.5);

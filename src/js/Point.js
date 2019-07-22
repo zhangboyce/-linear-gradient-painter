@@ -7,9 +7,31 @@ export default class Point {
         this.y = y;
         this.width = 12;
         this.height = 12;
-        this.background = background;
         this.canMove = canMove;
         this.$point = $("<div class='point'></div>");
+        this.setBackground(background);
+    }
+
+    setBackground(color) {
+        this.setFirstBackground(color);
+        this.setSecondBackground(color);
+    }
+
+    setFirstBackground(color) {
+        this.first_background = color;
+    }
+
+    setSecondBackground(color) {
+        this.second_background = color;
+    }
+
+    getLinearGradients(headPoint, circle) {
+        let percent = this.percent(headPoint, circle);
+        let color1 = this.first_background;
+        let color2 = this.second_background;
+
+        if (color1 === color2) return [{ percent, color: color1 }];
+        else return [{ percent, color: color1 }, { percent, color: color2 }]
     }
 
     rotate(angle, headPoint, circle) {
@@ -33,11 +55,12 @@ export default class Point {
         this.$point.removeClass('moving');
     }
 
-    render(circle) {
+    render(circle, line) {
         let offset = circle.center2Offset(this.x, this.y);
+        let bg_image = this.first_background + ' 50%, ' + this.second_background + ' 50%';
         this.$point.css('width', this.width + 'px');
         this.$point.css('height', this.height + 'px');
-        this.$point.css('background-color', this.background);
+        this.$point.css('background-image', 'linear-gradient(' + line.getAngle() + 'deg, ' + bg_image + ')');
         this.$point.css('top', (offset.y - this.height / 2) + 'px');
         this.$point.css('left', (offset.x - this.width  / 2) + 'px');
 
@@ -55,7 +78,6 @@ export default class Point {
             e.preventDefault();
             document.onmousemove = ev =>{
                 this.startMoving();
-
                 callback(ev.pageX, ev.pageY);
             };
 
@@ -68,7 +90,16 @@ export default class Point {
     }
 
     click(callback = () => {}) {
-        this.$point.click((e) => {
+        this.$point.click(e => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            callback();
+        });
+    }
+
+    dblClick(callback = () => {}) {
+        this.$point.dblclick(e => {
             e.preventDefault();
             e.stopPropagation();
 
