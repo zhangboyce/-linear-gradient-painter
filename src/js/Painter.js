@@ -70,8 +70,8 @@ export default class Painter {
             point.move((pageX, pageY) => {
                 let position = this.circle.page2Center(pageX, pageY);
                 let angle = utils.angle(position.x, position.y);
-                this.points.forEach((point2, index) => {
-                    point2.rotate(angle, this.headPoint, this.circle);
+                this.points.forEach(p => {
+                    p.rotate(angle, this.headPoint, this.circle);
                 });
 
                 this.line.rotate(angle);

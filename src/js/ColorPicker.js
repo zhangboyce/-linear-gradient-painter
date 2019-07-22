@@ -9,8 +9,21 @@ function colors() {
         $colors.removeClass('show');
     }
 
+    function animateCSS($target, animationName, callback) {
+        $target.addClass('fast animated '+ animationName);
+
+        if (callback && typeof callback === 'function') {
+            $target.bind('animationend', handleAnimationEnd);
+        }
+        function handleAnimationEnd() {
+            $target.removeClass('fast animated '+ animationName);
+            $target.unbind('animationend', handleAnimationEnd);
+            callback($target)
+        }
+    }
+
     function render(colors, callback = () => {}) {
-        $('.colors > div').remove('.color');
+        $('.color').remove();
         colors.forEach(function (color) {
             let $color = $("<div class='color'></div>");
             color.forEach(function (c, i) {
@@ -27,7 +40,9 @@ function colors() {
                 });
                 $color.append($item);
             });
+
             $('.colors').append($color);
+            animateCSS($color, 'zoomIn');
         });
     }
 
@@ -344,6 +359,8 @@ export default class ColorPicker {
 
         this.__initHandles__();
         this.currentColors = this.__getRandomArrayElements__(this.colors, this.count);
+
+
     }
 
     __initHandles__() {
@@ -373,7 +390,7 @@ export default class ColorPicker {
 
     exchange() {
         this.currentColors = this.__getRandomArrayElements__(this.colors, this.count);
-        this.$colors.render(this.currentColors, this.callback);
+        this.$colors.render(this.currentColors, this.callback, true);
     }
 
     __documentClickHandler__(e) {
