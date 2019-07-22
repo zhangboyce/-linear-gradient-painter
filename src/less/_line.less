@@ -1,10 +1,19 @@
+@line-width: 2px;
+@hover-line-width: 10px;
 .line {
   display: inline-block;
   position: absolute;
   top: 0;
-  left: calc(50% - 0.5px);
-  width: 0;
+  width: @line-width;
+  left: calc((100% - @line-width) / 2);
   height: 400px;
   border: 1px dashed #acacac;
   cursor: pointer;
+
+  //transition: all 0.2s;
+  //&:hover {
+  //  width: @hover-line-width;
+  //  left: calc((100% - @hover-line-width) / 2);
+  //  border-style: solid;
+  //}
 }

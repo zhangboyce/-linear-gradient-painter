@@ -11,7 +11,7 @@ export function angle(x, y) {
     let a = Math.acos(x/l);
     let ret = a * 180 / Math.PI;
     if (y < 0) {
-        return 360 - ret;
+        return Math.round(360 - ret);
     }
     return Math.round(ret);
 }

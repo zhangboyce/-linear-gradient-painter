@@ -82,9 +82,7 @@ export default class Painter {
                 this.points.forEach(p => {
                     p.rotate(angle, this.headPoint, this.circle);
                 });
-
                 this.line.rotate(angle);
-
                 this.render();
             });
 
